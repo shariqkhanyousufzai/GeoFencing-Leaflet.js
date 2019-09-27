@@ -1,3 +1,7 @@
+# GEOFENCING (LEAFLET.JS) #
+Simple Geofence 
+To see example go to folder(draw -> docs -> examples->edithandlers.html)
+
 # EditableHandlers #
 
 This is a project which will include different tools to edit/play with geometries in Leaflet.
