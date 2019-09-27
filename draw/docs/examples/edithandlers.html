@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<head>
+	<title>Leaflet.draw vector editing handlers</title>
+
+	<link rel="stylesheet" href="libs/leaflet.css" />
+
+	<script src="libs/leaflet-src.js"></script>
+
+	<script src="../../src/Leaflet.draw.js"></script>
+	<script src="../../src/Leaflet.Draw.Event.js"></script>
+
+	<script src="../../src/ext/TouchEvents.js"></script>
+
+	<script src="../../src/edit/handler/Edit.Poly.js"></script>
+	<script src="../../src/edit/handler/Edit.SimpleShape.js"></script>
+	<script src="../../src/edit/handler/Edit.Rectangle.js"></script>
+	<script src="../../src/edit/handler/Edit.Marker.js"></script>
+	<script src="../../src/edit/handler/Edit.CircleMarker.js"></script>
+	<script src="../../src/edit/handler/Edit.Circle.js"></script>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+</head>
+<body>
+	<div id="mapid" style="width: 800px; height: 600px; border: 1px solid #ccc"></div>
+	<div style="margin: 2% 0% 0% 0%">
+		<h1>This is for Circle</h1>
+		<input type="text" name="res" id="res">
+		<input type="text" name="latnorth" id="clat" value="51.519425328081894">
+		<input type="text" name="latsouth" id="clng" value="-0.05287170410156251">
+		<input type="text" name="rad" id="rad" value="600">
+	</div>
+	<div style="margin: 2% 0% 0% 0%">
+		<h1>This is for Rectangle</h1>
+		<input type="text" name="res" id="res">
+		<input type="text" name="latsouth" id="latsouth" value="51.483093349884925">
+		<input type="text" name="latnorth" id="latnorth" value="51.49933946133652">
+		<input type="text" name="lngsouth" id="lngsouth" value="-0.10059356689453126">
+		<input type="text" name="lngnorth" id="lngnorth" value="-0.05029678344726563">
+	</div>
+	<script>
+		var map = L.map('mapid').setView([ 51.519425328081894, -0.05287170410156251 ], 13);
+
+		L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+			attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+			maxZoom: 18,
+			id: 'mapbox.streets',
+			accessToken: 'pk.eyJ1Ijoic2hhcmlxa2hhbnlvdXN1ZnphaSIsImEiOiJjanRyaDV5bW8wazhrM3ptcmxuZmhjZ2l2In0.o0EqdnII3Ec6VpBLlHyvtg'
+		}).addTo(map);
+
+		var marker = L.marker([51.519425328081894, -0.05287170410156251]).addTo(map);
+
+
+		//       window.setInterval(function(){
+		//   alert("Hey");
+		// }, 5000); 
+
+		// var poly = new L.Polygon([
+		// 	[ 51, 0.01 ], [ 51, 0.02 ], [ 52, 0.02 ], [52, 0.01 ] 
+		// ]);
+		// poly.editing.enable();
+
+		// map.addLayer(poly);
+
+		// polyline.editing.enable();
+
+		// map.addLayer(polyline);
+
+		// var circleMarker = L.circleMarker([51.50, -0.08]);
+
+		// circleMarker.editing.enable();
+
+		// map.addLayer(circleMarker);
+		// This is For Circle
+
+		var circle = L.circle([51.519425328081894,-0.05287170410156251], 1600);
+
+		circle.editing.enable();
+
+		map.addLayer(circle);
+
+		
+		circle.on('edit', function() {
+			console.log(this.getLatLng().lat);
+			console.log(this.getLatLng().lng);
+			console.log(this._mRadius);
+		});
+
+		marker.dragging.enable();
+		marker.on('dragend', function (e) {
+			var x = marker.getLatLng().lat;
+			var y = marker.getLatLng().lng;
+		});
+
+
+		marker.on('edit', function() {
+			console.log(this);
+		});
+
+		var theCenterPt = circle.getLatLng();
+		var theRadius = circle.getRadius();
+		var counter_points_in_circle = 0;
+		var markers = marker.getLatLng();
+		console.log(markers);
+	    // console.log(theCenterPt);
+	    distance_from_centerPoint = markers.distanceTo(theCenterPt);
+	    if (distance_from_centerPoint <= theRadius) {
+	    	console.log("I am in");
+	    }else{
+	    	console.log("I am out");
+	    }
+		// End Of Circle
+
+
+
+	   marker.dragging.enable();
+	      marker.on('dragend', function (e) {
+	      var x = marker.getLatLng().lat;
+	      var y = marker.getLatLng().lng;
+	      var latnorth = $('#latnorth').val();
+	      var latsouth = $('#latsouth').val();
+	      var lngnorth = $('#lngnorth').val();
+	      var lngsouth = $('#lngsouth').val();
+	       $('#newlat1').val(Math.round(x * 100) / 100);
+	       $('#newlon').val(Math.round(y * 100) / 100);
+	       $('#getloction').removeAttr("disabled");
+	       if (x > latsouth && x < latnorth && y > lngsouth &&  y < lngnorth ) {
+	       	$("#res").val("Hey");
+	       	// alert("I Am In");
+	       }else {
+	       	$("#res").val("Bye");
+	       	// alert("I Am Out");
+	       }
+	  });
+		var rectangle = L.rectangle([[51.49933946133652, -0.05029678344726563], [51.483093349884925,-0.10059356689453126]]);
+
+			rectangle.editing.enable();
+
+			map.addLayer(rectangle);
+
+			rectangle.on('edit', function() {
+
+				  var latnorth = $('#latnorth').val(this._bounds._northEast.lat);
+			      var latsouth = $('#latsouth').val(this._bounds._southWest.lat);
+			      var lngnorth = $('#lngnorth').val(this._bounds._northEast.lng);
+			      var lngsouth = $('#lngsouth').val(this._bounds._southWest.lng);
+			});
+
+
+		// Method for finding geofence marker in Rectangle
+
+
+
+
+
+</script>
+
+</body>
+</html>
